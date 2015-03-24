@@ -1,0 +1,33 @@
+{
+  "name": "react-lightbox",
+  "version": "0.1.0",
+  "description": "An image lightbox component for React",
+  "main": "src/react-lightbox.js",
+  "scripts": {
+    "start": "webpack-dev-server --devtool eval --progress --colors --content-base build/",
+    "deploy": "webpack -p -config webpack.production.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LaustAxelsen/react-lightbox.git"
+  },
+  "keywords": [
+    "React",
+    "lightbox",
+    "images"
+  ],
+  "author": "Gloppens EDB Lag",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LaustAxelsen/react-lightbox/issues"
+  },
+  "homepage": "https://github.com/LaustAxelsen/react-lightbox",
+  "peerDependencies": {
+    "react": "^0.12.2 || ^0.13.1"
+  },
+  "devDependencies": {
+    "webpack": "^1.7.3",
+    "webpack-dev-server": "^1.7.0"
+  }
+}
