@@ -98,7 +98,7 @@ var Carousel = React.createFactory(React.createClass({
   },
   renderControls: function () {
     if (this.props.controls) {
-      return this.props.controls({
+      return React.createFactory(this.props.controls)({
         backward: this.backward,
         forward: this.forward
       });
