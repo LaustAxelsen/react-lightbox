@@ -10,20 +10,23 @@ var Carousel = React.createFactory(React.createClass({
   },
   componentWillMount: function () {
     if (this.props.keyboard) {
-      window.addEventListener('keydown', this.changePictureByKeyboard);
+      window.addEventListener('keydown', this.handleKeyboardInput);
     }
   },
   componentWillUnmount: function () {
     if (this.props.keyboard) {
-      window.removeEventListener('keydown', this.changePictureByKeyboard);
+      window.removeEventListener('keydown', this.handleKeyboardInput);
     }
   },
-  changePictureByKeyboard: function (event) {
+  handleKeyboardInput: function (event) {
     if (event.keyCode === 37) {
       this.backward();
     }
     if (event.keyCode === 39) {
       this.forward();
+    }
+    if (event.keyCode === 27) {
+      this.props.close();
     }
   },
   getNextIndex: function () {
@@ -32,13 +35,19 @@ var Carousel = React.createFactory(React.createClass({
   getPreviousIndex: function () {
     return this.state.current === 0 ? this.props.pictures.length - 1 : this.state.current - 1;
   },
-  forward: function () {
+  forward: function (event) {
+    if (event) {
+      event.stopPropagation();
+    }
     this.setState({
       previous: this.state.current,
       current: this.getNextIndex()
     });
   },
   backward: function () {
+    if (event) {
+      event.stopPropagation();
+    }
     this.setState({
       previous: this.state.current,
       current: this.getPreviousIndex()
@@ -56,7 +65,7 @@ var Carousel = React.createFactory(React.createClass({
       return className += ' react-lightbox-carousel-image-in';
     }
     if (index === this.getNextIndex()) {
-      return className += ' react-lightbox-carousel-image-out';  
+      return className += ' react-lightbox-carousel-image-out';
     }
   },
   createPictureClass: function (index) {
@@ -91,7 +100,7 @@ var Carousel = React.createFactory(React.createClass({
         className: this.createPictureClass(index),
         style: {
           backgroundImage: 'url(' + picture + ')',
-          visibility: this.state.previous === index || this.state.current === index ? 'visible' : 'hidden' 
+          visibility: this.state.previous === index || this.state.current === index ? 'visible' : 'hidden'
         }
       });
     }, this);
@@ -115,11 +124,19 @@ var Lightbox = React.createClass({
   componentDidMount: function () {
     this.overlay = document.createElement('div');
     this.overlay.className = 'react-lightbox-overlay';
+    this.overlay.addEventListener('webkitTransitionEnd', this.handleOverlayMounting);
   },
   componentWillUnmount: function () {
-
+    this.overlay.removeEventListener('webkitTransitionEnd', this.handleOverlayMounting);
   },
-  openLightbox: function (index) {
+  handleOverlayMounting: function () {
+    if (!this.overlay.classList.contains('react-lightbox-overlay-open')) {
+      React.unmountComponentAtNode(this.overlay);
+      document.body.removeChild(this.overlay);
+      window.removeEventListener('click', this.closeCarousel);
+    }
+  },
+  openCarousel: function (index) {
     this.overlay.innerHMTL = '';
     this.overlay.className = 'react-lightbox-overlay';
     document.body.appendChild(this.overlay);
@@ -127,19 +144,21 @@ var Lightbox = React.createClass({
       pictures: this.props.pictures,
       current: index,
       keyboard: this.props.keyboard,
-      controls: this.props.controls
+      controls: this.props.controls,
+      close: this.closeCarousel
     }), this.overlay);
     requestAnimationFrame(function () {
       this.overlay.classList.add('react-lightbox-overlay-open');
+      window.addEventListener('click', this.closeCarousel);
     }.bind(this));
   },
-  closeLightbox: function () {
-
+  closeCarousel: function () {
+    this.overlay.classList.remove('react-lightbox-overlay-open');
   },
   renderPictures: function (pictureUrl, index) {
     return DOM.div({
       className: 'react-lightbox-image',
-      onClick: this.openLightbox.bind(this, index),
+      onClick: this.openCarousel.bind(this, index),
       style: {
         backgroundImage: 'url(' + pictureUrl + ')'
       }
