@@ -59,13 +59,13 @@ var Carousel = React.createFactory(React.createClass({
   createInitialPictureClass: function (index) {
     var className = 'react-lightbox-carousel-image';
     if (index === this.getPreviousIndex()) {
-      return className;
+      return className += ' react-lightbox-carousel-image-backward';
     }
     if (index === this.state.current) {
-      return className += ' react-lightbox-carousel-image-in';
+      return className;
     }
     if (index === this.getNextIndex()) {
-      return className += ' react-lightbox-carousel-image-out';
+      return className += ' react-lightbox-carousel-image-forward';
     }
   },
   createPictureClass: function (index) {
@@ -76,23 +76,24 @@ var Carousel = React.createFactory(React.createClass({
       return this.createInitialPictureClass(index);
     }
 
-    // Normal forward behavior
+    // Normal backword behavior
     if (index === this.state.previous && !this.isForwarding()) {
-      return className += ' react-lightbox-carousel-image-out';
-    }
-    if (index === this.state.current) {
-      return className += ' react-lightbox-carousel-image-in';
+      return className += ' react-lightbox-carousel-image-forward';
     }
 
-    // Reverse with backward behavior
-    if (index === this.state.previous && this.isForwarding()) {
+    if (index === this.state.current) {
       return className;
     }
+
+    // Reverse with forward behavior
+    if (index === this.state.previous && this.isForwarding()) {
+      return className += ' react-lightbox-carousel-image-backward';
+    }
     if (this.isForwarding()) {
-      return className += ' react-lightbox-carousel-image-out';
+      return className += ' react-lightbox-carousel-image-forward';
     }
 
-    return className;
+    return className += ' react-lightbox-carousel-image-backward';
   },
   renderPictures: function () {
     return this.props.pictures.map(function (picture, index) {
@@ -155,14 +156,20 @@ var Lightbox = React.createClass({
   closeCarousel: function () {
     this.overlay.classList.remove('react-lightbox-overlay-open');
   },
-  renderPictures: function (pictureUrl, index) {
-    return DOM.div({
-      className: 'react-lightbox-image',
-      onClick: this.openCarousel.bind(this, index),
-      style: {
-        backgroundImage: 'url(' + pictureUrl + ')'
-      }
-    });
+  renderPictures: function (picture, index) {
+
+    if (typeof picture === 'string') {
+      return DOM.div({
+        className: 'react-lightbox-image',
+        onClick: this.openCarousel.bind(this, index),
+        style: {
+          backgroundImage: 'url(' + picture + ')'
+        }
+      });
+    } else {
+      return picture;
+    }
+
   },
   render: function () {
     return DOM.div({
