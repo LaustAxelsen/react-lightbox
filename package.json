@@ -1,6 +1,6 @@
 {
   "name": "react-lightbox",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "An image lightbox component for React",
   "main": "src/react-lightbox.js",
   "scripts": {

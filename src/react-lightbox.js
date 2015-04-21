@@ -172,6 +172,7 @@ var Lightbox = React.createClass({
 
     if (typeof picture === 'string') {
       return DOM.div({
+        key: index,
         className: 'react-lightbox-image',
         onClick: this.openCarousel.bind(this, index),
         style: {
@@ -180,6 +181,7 @@ var Lightbox = React.createClass({
       });
     } else {
       return DOM.div({
+        key: index,
         className: 'react-lightbox-image',
         onClick: this.openCarousel.bind(this, index)
       }, picture);
