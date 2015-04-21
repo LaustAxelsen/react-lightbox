@@ -97,13 +97,25 @@ var Carousel = React.createFactory(React.createClass({
   },
   renderPictures: function () {
     return this.props.pictures.map(function (picture, index) {
-      return DOM.div({
-        className: this.createPictureClass(index),
-        style: {
-          backgroundImage: 'url(' + picture + ')',
-          visibility: this.state.previous === index || this.state.current === index ? 'visible' : 'hidden'
-        }
-      });
+
+      if (typeof picture === 'string') {
+        return DOM.div({
+          key: index,
+          className: this.createPictureClass(index),
+          style: {
+            backgroundImage: 'url(' + picture + ')',
+            visibility: this.state.previous === index || this.state.current === index ? 'visible' : 'hidden'
+          }
+        });
+      } else {
+        return DOM.div({
+          key: index,
+          className: this.createPictureClass(index),
+          style: {
+            visibility: this.state.previous === index || this.state.current === index ? 'visible' : 'hidden'
+          }
+        }, picture);
+      }
     }, this);
   },
   renderControls: function () {
@@ -167,7 +179,10 @@ var Lightbox = React.createClass({
         }
       });
     } else {
-      return picture;
+      return DOM.div({
+        className: 'react-lightbox-image',
+        onClick: this.openCarousel.bind(this, index)
+      }, picture);
     }
 
   },
