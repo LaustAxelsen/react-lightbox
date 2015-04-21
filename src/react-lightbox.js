@@ -191,7 +191,7 @@ var Lightbox = React.createClass({
   render: function () {
     return DOM.div({
       className: 'react-lightbox'
-    }, (this.props.pictures || []).map(this.renderPictures));
+    }, (this.props.previews || this.props.pictures || []).map(this.renderPictures));
   }
 })
 
