@@ -44,7 +44,7 @@ var Carousel = React.createFactory(React.createClass({
       current: this.getNextIndex()
     });
   },
-  backward: function () {
+  backward: function (event) {
     if (event) {
       event.stopPropagation();
     }
